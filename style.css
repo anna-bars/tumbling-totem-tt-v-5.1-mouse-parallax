@@ -31,6 +31,8 @@ height: 108vh;
 }
 .heroo {
     background: #1C617A;
+    position: relative;
+    overflow: hidden;
 }
 .layer-1-sky,
 .layer-2-mountains,
@@ -51,16 +53,18 @@ height: 108vh;
 .leaves-left {
     width: 23%;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: -2%;
+    left: -2%;
     z-index: 24;
+    will-change: transform;
 }
 .leaves-right {
     width: 23%;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -2%;
+    right: -2%;
     z-index: 24;
+    will-change: transform;
 }
 
 /* layers */
@@ -226,4 +230,11 @@ h1 {
     border: 1px solid #ffeded6a;
     border-radius: 44px;
     padding: 8px 16px;
+}
+.leaves-left {
+    transform-origin: left top;
+}
+
+.leaves-right {
+    transform-origin: right top;
 }
