@@ -1,0 +1,15 @@
+
+.about-text h1 .word {
+    display: inline-block;
+    will-change: opacity, transform;
+}
+
+/* p — block, no width change */
+.about-text .about-second-cont p {
+    will-change: opacity, transform;
+}
+
+/* Explore ↓ — keep all original styles, just animate */
+.about-text .about-second-cont span {
+    will-change: opacity, transform;
+}

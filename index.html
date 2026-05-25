@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tumbling Totem Portfolio</title>
     <link rel="stylesheet" href="./style.css">
+
     <link rel="stylesheet" href="./font/urbanist/stylesheet.css">
+    <link rel="stylesheet" href="./font/adventures/stylesheet.css">
+
+    <link rel="stylesheet" href="./about-animations.css">
+    <link rel="stylesheet" href="./css/works.css">
 </head>
 <body>
     <div class="hero-cont">
@@ -45,29 +50,67 @@
         <img class="leaves-right" src="./img/hero/leaves-vines-right.png" alt="">
       </div>
 
-<section class="about">
-    <img class="about-section-top-divider" style="width: 100%;" src="./img/about/about-section-top-divider.png" alt="">
-    <div class="spec-divider-cont">
-        <img src="./img/about/spec-divider-top-left.png" alt="">
-        <img src="./img/about/spec-divider-top-right.png" alt="">
-    </div>
-    <div class="about-text">
-        <h1>
-            Dive deeper <br>
-            and discover the boundless world <br>
-            of 3D Animation.
-        </h1>
-        <div class="about-second-cont">
-            <p>Tumbling Totem creates visuals for your project, endless possibilities tailored to your needs.</p>
-            <span>Explore ↓</span>
+    <section class="about">
+        <img class="about-section-top-divider" style="width: 100%;" src="./img/about/about-section-top-divider.png" alt="">
+        <div class="spec-divider-cont">
+            <img src="./img/about/spec-divider-top-left.png" alt="">
+            <img src="./img/about/spec-divider-top-right.png" alt="">
         </div>
-    </div>
-    <div class="spec-divider-cont">
-        <img src="./img/about/spec-divider-bottom-left.png" alt="">
-        <img src="./img/about/spec-divider-bottom-right.png" alt="">
-    </div>
-    <img class="about-section-bottom-divider" src="./img/about/about-section-bottom-divider.png" alt="">
-</section>
+        <div class="about-text">
+            <h1>
+                Dive deeper <br>
+                and discover the boundless world <br>
+                of 3D Animation.
+            </h1>
+            <div class="about-second-cont">
+                <p>Tumbling Totem creates visuals for your project, endless possibilities tailored to your needs.</p>
+                <span>Explore ↓</span>
+            </div>
+        </div>
+        <div class="spec-divider-cont">
+            <img src="./img/about/spec-divider-bottom-left.png" alt="">
+            <img src="./img/about/spec-divider-bottom-right.png" alt="">
+        </div>
+        <img class="about-section-bottom-divider" src="./img/about/about-section-bottom-divider.png" alt="">
+    </section>
+
+    <section class="featured-works">
+        <h2 class="featured-works-title">
+            Featured <span>Works</span>
+        </h2>
+        <div class="featured-works-cont">
+            <div class="featured-work-item">
+                <div class="work-item-top-shadow"></div>
+
+                <div class="work-item-top-info">
+                    <h3 class="work-item-top-info-category">
+                        INDEX.01 
+                        <span>// recovery</span>
+                    </h3>
+                    <h3 class="work-item-top-info-data">
+                        oct ’24
+                    </h3>
+                </div>
+                <div class="work-item-bottom-info">
+                    <h2 class="work-item-bottom-info-title">
+                        Forest Scene
+                    </h2>
+                    <div class="work-item-bottom-info-tags">
+                        <p>Environment</p>
+                        <div class="tag-divider-circle"></div>
+                        <p>3D Render</p>
+                        <div class="tag-divider-circle"></div>
+                        <p>Atmospheric</p>
+                        <div class="tag-divider-circle"></div>
+
+                    </div>
+                </div>
+
+                <div class="work-item-bottom-shadow"></div>
+            </div>
+        </div>
+    </section>
+
     </div>
 
     </div>
@@ -143,7 +186,7 @@
         { selector: '.logo',                 mx: -4,  my: -2  },  // subtle counter-move
         { selector: '.darkness',             mx: 1.5, my: 0.5 },
     ];
-
+ 
     const items = layers.map(layer => ({
         el: document.querySelector(layer.selector),
         scrollSpeed: layer.scrollSpeed
@@ -249,5 +292,6 @@ window.addEventListener('scroll', () => {
 
 });
 </script>
+<script src="./about.js"></script>
 </body>
 </html>
