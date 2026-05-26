@@ -9,7 +9,7 @@ if (dragHint) dragHint.style.display = "none";
 // ── Create custom cursor element ───────────────────────────────────────────
 const cursor = document.createElement("div");
 cursor.className = "works-cursor";
-cursor.innerHTML = `<span class="works-cursor-label">DRAG</span>`;
+cursor.innerHTML = `<span class="works-cursor-label">HOLD AND <br>DRAG</span>`;
 document.body.appendChild(cursor);
 
 // ── Cursor state ───────────────────────────────────────────────────────────
@@ -134,7 +134,7 @@ cursorZone.addEventListener("mousedown", e => {
     isDragging = true;
     startX     = e.clientX;
     cursor.classList.add("is-dragging");
-    cursor.querySelector(".works-cursor-label").textContent = "DRAG";
+    cursor.querySelector(".works-cursor-label").textContent = "HOLD & DRAG";
 });
 
 window.addEventListener("mousemove", e => {
