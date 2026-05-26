@@ -196,7 +196,7 @@
 ========================================= */
 .drag-hint {
 
-    position: fixed;
+    position: absolute;
 
     top: 50%;
     right: 11%;
@@ -208,20 +208,18 @@
 
     border-radius: 50%;
 
-    background:
-    rgba(255,255,255,.12);
+    background: rgba(255,255,255,.12);
 
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
 
-    border:
-    1px solid rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.16);
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    z-index: 999999;
+    z-index: 50;
 
     cursor: grab;
 
