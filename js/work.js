@@ -134,7 +134,7 @@ cursorZone.addEventListener("mousedown", e => {
     isDragging = true;
     startX     = e.clientX;
     cursor.classList.add("is-dragging");
-    cursor.querySelector(".works-cursor-label").textContent = "HOLD & DRAG";
+    cursor.querySelector(".works-cursor-label").innerHTML = "HOLD <br> & DRAG";
 });
 
 window.addEventListener("mousemove", e => {

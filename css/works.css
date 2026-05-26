@@ -279,18 +279,36 @@
     opacity: 0.7;
 }
 
+
+
+
+
 /* Left arrow */
 .works-cursor.is-dragging::before {
-    left: 14px;
-    border-top: 6px solid transparent;
-    border-bottom: 6px solid transparent;
-    border-right: 8px solid white;
+    content: '‹';
+    left: 12px;
+    font-size: 22px;
+    color: white;
+    opacity: 0.8;
+    line-height: 1;
+    border: none;
+    width: auto;
+    height: auto;
 }
 
 /* Right arrow */
 .works-cursor.is-dragging::after {
-    right: 14px;
-    border-top: 6px solid transparent;
-    border-bottom: 6px solid transparent;
-    border-left: 8px solid white;
+    content: '›';
+    right: 12px;
+    font-size: 22px;
+    color: white;
+    opacity: 0.8;
+    line-height: 1;
+    border: none;
+    width: auto;
+    height: auto;
 }
+
+
+
+
