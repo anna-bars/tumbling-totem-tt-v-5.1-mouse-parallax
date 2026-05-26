@@ -2,6 +2,7 @@
     background: linear-gradient(180deg, #141414, #111111);
     padding: 105px 0;
     overflow: hidden;
+    position: relative;
 }
 
 .featured-works-title {
@@ -21,7 +22,7 @@
 
 .featured-works-cont {
     width: 100%;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
     user-select: none;
 }
@@ -79,7 +80,7 @@
 /* OTHERS */
 
 .featured-work-item:not(.is-active):not(.is-prev):not(.is-next) {
-    opacity: .15;
+    opacity: .95;
     transform: scale(.98);
 }
 
@@ -190,3 +191,72 @@
 
 
 
+/* =========================================
+   DRAG CIRCLE
+========================================= */
+.drag-hint {
+
+    position: fixed;
+
+    top: 50%;
+    right: 11%;
+
+    transform: translateY(-50%);
+
+    width: 140px;
+    height: 140px;
+
+    border-radius: 50%;
+
+    background:
+    rgba(255,255,255,.12);
+
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+
+    border:
+    1px solid rgba(255,255,255,.16);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 999999;
+
+    cursor: grab;
+
+    user-select: none;
+
+    box-shadow:
+    0 10px 60px rgba(0,0,0,.35);
+
+    transition:
+    transform .25s ease,
+    background .25s ease;
+}
+
+.drag-hint span {
+
+    color: white;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+
+    letter-spacing: .08em;
+
+    text-transform: uppercase;
+}
+
+.drag-hint.dragging {
+
+    cursor: grabbing;
+
+    transform:
+    translateY(-50%) scale(1.08);
+
+    background:
+    rgba(255,255,255,.2);
+}
