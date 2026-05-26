@@ -1,30 +1,25 @@
 const track = document.getElementById("worksTrack");
 
 let slides = Array.from(track.children);
-
 let currentIndex = 1;
 
-/* UPDATE CLASSES */
-
+/* ---------------------------
+   CLASS UPDATE
+---------------------------- */
 function updateClasses() {
 
     slides.forEach(slide => {
-        slide.classList.remove(
-            "is-active",
-            "is-prev",
-            "is-next"
-        );
+        slide.classList.remove("is-active", "is-prev", "is-next");
     });
 
     slides[currentIndex]?.classList.add("is-active");
-
     slides[currentIndex - 1]?.classList.add("is-prev");
-
     slides[currentIndex + 1]?.classList.add("is-next");
 }
 
-/* CENTER ACTIVE */
-
+/* ---------------------------
+   CENTER (WITH ANIMATION)
+---------------------------- */
 function centerSlide(animated = true) {
 
     const activeSlide = slides[currentIndex];
@@ -43,131 +38,94 @@ function centerSlide(animated = true) {
     updateClasses();
 }
 
-/* NEXT */
-
+/* ---------------------------
+   NEXT (SMOOTH + LOOP)
+---------------------------- */
 function nextSlide() {
 
-    if (track.classList.contains("animating")) return;
-
-    track.classList.add("animating");
+    if (track.dataset.animating === "true") return;
+    track.dataset.animating = "true";
 
     currentIndex++;
 
     centerSlide(true);
 
-    track.addEventListener("transitionend", handleNext, { once: true });
+    track.addEventListener("transitionend", () => {
+
+        if (currentIndex >= slides.length - 1) {
+            const first = slides.shift();
+            track.appendChild(first);
+            slides.push(first);
+            currentIndex--;
+            centerSlide(false);
+        }
+
+        track.dataset.animating = "false";
+
+    }, { once: true });
 }
 
-function handleNext() {
-
-    if (currentIndex >= slides.length - 1) {
-
-        const first = slides.shift();
-
-        track.appendChild(first);
-
-        slides.push(first);
-
-        currentIndex--;
-
-        centerSlide(false);
-    }
-
-    track.classList.remove("animating");
-}
-
-/* PREV */
-
+/* ---------------------------
+   PREV (SMOOTH + LOOP)
+---------------------------- */
 function prevSlide() {
 
-    if (track.classList.contains("animating")) return;
+    if (track.dataset.animating === "true") return;
+    track.dataset.animating = "true";
 
-    track.classList.add("animating");
+    currentIndex--;
 
-    if (currentIndex <= 0) {
+    centerSlide(true);
 
-        const last = slides.pop();
+    track.addEventListener("transitionend", () => {
 
-        track.prepend(last);
+        if (currentIndex <= 0) {
+            const last = slides.pop();
+            track.prepend(last);
+            slides.unshift(last);
+            currentIndex++;
+            centerSlide(false);
+        }
 
-        slides.unshift(last);
+        track.dataset.animating = "false";
 
-        currentIndex++;
-
-        centerSlide(false);
-    }
-
-    requestAnimationFrame(() => {
-
-        currentIndex--;
-
-        centerSlide(true);
-
-        track.addEventListener("transitionend", () => {
-
-            track.classList.remove("animating");
-
-        }, { once: true });
-
-    });
+    }, { once: true });
 }
 
-/* DRAG */
-
+/* ---------------------------
+   DRAG
+---------------------------- */
 let startX = 0;
-let isDragging = false;
 
 track.addEventListener("mousedown", e => {
-
     startX = e.clientX;
-    isDragging = true;
 });
 
 window.addEventListener("mouseup", e => {
 
-    if (!isDragging) return;
-
-    isDragging = false;
-
     const diff = e.clientX - startX;
 
-    if (diff < -50) {
-        nextSlide();
-    }
-
-    else if (diff > 50) {
-        prevSlide();
-    }
+    if (diff < -50) nextSlide();
+    else if (diff > 50) prevSlide();
 });
 
 /* TOUCH */
-
 track.addEventListener("touchstart", e => {
-
     startX = e.touches[0].clientX;
 });
 
 window.addEventListener("touchend", e => {
 
-    const diff =
-        e.changedTouches[0].clientX - startX;
+    const diff = e.changedTouches[0].clientX - startX;
 
-    if (diff < -50) {
-        nextSlide();
-    }
-
-    else if (diff > 50) {
-        prevSlide();
-    }
+    if (diff < -50) nextSlide();
+    else if (diff > 50) prevSlide();
 });
 
 /* RESIZE */
-
 window.addEventListener("resize", () => {
-
     centerSlide(false);
 });
 
 /* INIT */
-
 centerSlide(false);
