@@ -73,14 +73,14 @@
 .featured-work-item.is-prev,
 .featured-work-item.is-next {
     opacity: .45;
-    transform: scale(.92);
+    transform: scale(.99);
 }
 
 /* OTHERS */
 
 .featured-work-item:not(.is-active):not(.is-prev):not(.is-next) {
     opacity: .15;
-    transform: scale(.85);
+    transform: scale(.98);
 }
 
 /* TOP INFO */
