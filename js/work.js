@@ -1,6 +1,7 @@
 const track        = document.getElementById("worksTrack");
 const dragHint     = document.getElementById("dragHint");
 const section      = document.querySelector(".featured-works");
+const cursorZone   = document.querySelector(".featured-works-cont");
 
 // ── Hide the old drag-hint ─────────────────────────────────────────────────
 if (dragHint) dragHint.style.display = "none";
@@ -28,13 +29,13 @@ function animateCursor() {
 
 animateCursor();
 
-// ── Show / hide cursor when entering / leaving section ────────────────────
-section.addEventListener("mouseenter", () => {
+// ── Show / hide cursor only inside .featured-works-cont ───────────────────
+cursorZone.addEventListener("mouseenter", () => {
     cursor.classList.add("is-visible");
     cursorVisible = true;
 });
 
-section.addEventListener("mouseleave", () => {
+cursorZone.addEventListener("mouseleave", () => {
     cursor.classList.remove("is-visible");
     cursor.classList.remove("is-dragging");
     cursorVisible = false;
@@ -124,12 +125,12 @@ function prevSlide() {
 }
 
 /* =========================================
-   DRAG — MOUSE (on the whole section)
+   DRAG — MOUSE (on .featured-works-cont only)
 ========================================= */
 let isDragging = false;
 let startX     = 0;
 
-section.addEventListener("mousedown", e => {
+cursorZone.addEventListener("mousedown", e => {
     isDragging = true;
     startX     = e.clientX;
     cursor.classList.add("is-dragging");
@@ -157,7 +158,7 @@ window.addEventListener("mouseup", e => {
 /* =========================================
    DRAG — TOUCH
 ========================================= */
-section.addEventListener("touchstart", e => {
+cursorZone.addEventListener("touchstart", e => {
     isDragging = true;
     startX     = e.touches[0].clientX;
 });

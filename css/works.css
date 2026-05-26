@@ -3,12 +3,14 @@
     padding: 105px 0;
     overflow: hidden;
     position: relative;
+}
 
-    /* Hide the real cursor inside this section */
+/* Hide native cursor only inside the slides container */
+.featured-works-cont {
     cursor: none;
 }
 
-.featured-works * {
+.featured-works-cont * {
     cursor: none !important;
 }
 
