@@ -210,6 +210,9 @@
 
     background: rgba(255,255,255,.12);
 
+    background-image: url(../img/featured-works/circle-back.png);
+    background-size: cover;
+
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
 
