@@ -79,7 +79,8 @@
 /* OTHERS */
 
 .featured-work-item:not(.is-active):not(.is-prev):not(.is-next) {
-    opacity: 0;
+    opacity: .15;
+    transform: scale(.85);
 }
 
 /* TOP INFO */

@@ -1,14 +1,31 @@
 const track = document.getElementById("worksTrack");
 
-const slides = Array.from(track.children);
+let slides = Array.from(track.children);
 
 let currentIndex = 1;
 
-const GAP = 20;
+/* UPDATE CLASSES */
 
-/* CENTER ACTIVE SLIDE */
+function updateClasses() {
 
-function updatePosition(animated = false) {
+    slides.forEach(slide => {
+        slide.classList.remove(
+            "is-active",
+            "is-prev",
+            "is-next"
+        );
+    });
+
+    slides[currentIndex]?.classList.add("is-active");
+
+    slides[currentIndex - 1]?.classList.add("is-prev");
+
+    slides[currentIndex + 1]?.classList.add("is-next");
+}
+
+/* CENTER ACTIVE */
+
+function centerSlide(animated = true) {
 
     const activeSlide = slides[currentIndex];
 
@@ -26,42 +43,37 @@ function updatePosition(animated = false) {
     updateClasses();
 }
 
-/* ACTIVE CLASSES */
-
-function updateClasses() {
-
-    slides.forEach(slide => {
-        slide.classList.remove(
-            "is-active",
-            "is-prev",
-            "is-next"
-        );
-    });
-
-    slides[currentIndex].classList.add("is-active");
-
-    if (slides[currentIndex - 1]) {
-        slides[currentIndex - 1].classList.add("is-prev");
-    }
-
-    if (slides[currentIndex + 1]) {
-        slides[currentIndex + 1].classList.add("is-next");
-    }
-}
-
 /* NEXT */
 
 function nextSlide() {
 
     if (track.classList.contains("animating")) return;
 
-    if (currentIndex >= slides.length - 1) return;
-
     track.classList.add("animating");
 
     currentIndex++;
 
-    updatePosition(true);
+    centerSlide(true);
+
+    track.addEventListener("transitionend", handleNext, { once: true });
+}
+
+function handleNext() {
+
+    if (currentIndex >= slides.length - 1) {
+
+        const first = slides.shift();
+
+        track.appendChild(first);
+
+        slides.push(first);
+
+        currentIndex--;
+
+        centerSlide(false);
+    }
+
+    track.classList.remove("animating");
 }
 
 /* PREV */
@@ -70,21 +82,35 @@ function prevSlide() {
 
     if (track.classList.contains("animating")) return;
 
-    if (currentIndex <= 0) return;
-
     track.classList.add("animating");
 
-    currentIndex--;
+    if (currentIndex <= 0) {
 
-    updatePosition(true);
+        const last = slides.pop();
+
+        track.prepend(last);
+
+        slides.unshift(last);
+
+        currentIndex++;
+
+        centerSlide(false);
+    }
+
+    requestAnimationFrame(() => {
+
+        currentIndex--;
+
+        centerSlide(true);
+
+        track.addEventListener("transitionend", () => {
+
+            track.classList.remove("animating");
+
+        }, { once: true });
+
+    });
 }
-
-/* TRANSITION END */
-
-track.addEventListener("transitionend", () => {
-
-    track.classList.remove("animating");
-});
 
 /* DRAG */
 
@@ -138,9 +164,10 @@ window.addEventListener("touchend", e => {
 /* RESIZE */
 
 window.addEventListener("resize", () => {
-    updatePosition(false);
+
+    centerSlide(false);
 });
 
 /* INIT */
 
-updatePosition(false);
+centerSlide(false);
