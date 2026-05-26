@@ -1,182 +1,167 @@
-const track        = document.getElementById("worksTrack");
-const dragHint     = document.getElementById("dragHint");
-const section      = document.querySelector(".featured-works");
-const cursorZone   = document.querySelector(".featured-works-cont");
+/* =========================================================
+   WorksSlider — reusable class, supports multiple instances
+   Usage: new WorksSlider(sectionEl)
+========================================================= */
 
-// ── Hide the old drag-hint ─────────────────────────────────────────────────
-if (dragHint) dragHint.style.display = "none";
+class WorksSlider {
 
-// ── Create custom cursor element ───────────────────────────────────────────
-const cursor = document.createElement("div");
-cursor.className = "works-cursor";
-cursor.innerHTML = `<span class="works-cursor-label">HOLD AND <br>DRAG</span>`;
-document.body.appendChild(cursor);
+    constructor(section) {
+        this.section    = section;
+        this.cursorZone = section.querySelector(".featured-works-cont");
+        this.track      = section.querySelector(".featured-works-track");
+        const hint      = section.querySelector(".drag-hint");
+        if (hint) hint.style.display = "none";
 
-// ── Cursor state ───────────────────────────────────────────────────────────
-let cursorVisible = false;
-let cursorX = 0, cursorY = 0;
-let smoothX = 0, smoothY = 0;
-let rafId = null;
+        this.slides       = Array.from(this.track.children);
+        this.currentIndex = 1;
+        this.isDragging   = false;
+        this.startX       = 0;
 
-function lerp(a, b, t) { return a + (b - a) * t; }
+        // ── Cursor ───────────────────────────────────────────────
+        this.cursor = document.createElement("div");
+        this.cursor.className = "works-cursor";
+        this.cursor.innerHTML = `<span class="works-cursor-label">HOLD &<br>DRAG</span>`;
+        document.body.appendChild(this.cursor);
 
-function animateCursor() {
-    smoothX = lerp(smoothX, cursorX, 0.12);
-    smoothY = lerp(smoothY, cursorY, 0.12);
-    cursor.style.transform = `translate(${smoothX}px, ${smoothY}px) translate(-50%, -50%)`;
-    rafId = requestAnimationFrame(animateCursor);
-}
+        this.cursorX = 0; this.cursorY = 0;
+        this.smoothX = 0; this.smoothY = 0;
 
-animateCursor();
-
-// ── Show / hide cursor only inside .featured-works-cont ───────────────────
-cursorZone.addEventListener("mouseenter", () => {
-    cursor.classList.add("is-visible");
-    cursorVisible = true;
-});
-
-cursorZone.addEventListener("mouseleave", () => {
-    cursor.classList.remove("is-visible");
-    cursor.classList.remove("is-dragging");
-    cursorVisible = false;
-    isDragging = false;
-});
-
-// ── Track mouse position ───────────────────────────────────────────────────
-window.addEventListener("mousemove", e => {
-    cursorX = e.clientX;
-    cursorY = e.clientY;
-
-    if (isDragging) {
-        const move = e.clientX - startX;
-        cursor.style.setProperty("--drag-offset", `${move * 0.2}px`);
+        this._bindEvents();
+        this._animateCursor();
+        this.centerSlide(false);
     }
-});
 
-// ── Slide state ────────────────────────────────────────────────────────────
-let slides       = Array.from(track.children);
-let currentIndex = 1;
+    // ── Helpers ─────────────────────────────────────────────────
+    lerp(a, b, t) { return a + (b - a) * t; }
 
-/* =========================================
-   UPDATE CLASSES
-========================================= */
-function updateClasses() {
-    slides.forEach(slide => {
-        slide.classList.remove("is-active", "is-prev", "is-next");
-    });
-    slides[currentIndex]?.classList.add("is-active");
-    slides[currentIndex - 1]?.classList.add("is-prev");
-    slides[currentIndex + 1]?.classList.add("is-next");
+    // ── Cursor RAF ──────────────────────────────────────────────
+    _animateCursor() {
+        this.smoothX = this.lerp(this.smoothX, this.cursorX, 0.12);
+        this.smoothY = this.lerp(this.smoothY, this.cursorY, 0.12);
+        this.cursor.style.transform =
+            `translate(${this.smoothX}px, ${this.smoothY}px) translate(-50%, -50%)`;
+        requestAnimationFrame(() => this._animateCursor());
+    }
+
+    // ── Slide logic ─────────────────────────────────────────────
+    updateClasses() {
+        this.slides.forEach(s =>
+            s.classList.remove("is-active", "is-prev", "is-next"));
+        this.slides[this.currentIndex]?.classList.add("is-active");
+        this.slides[this.currentIndex - 1]?.classList.add("is-prev");
+        this.slides[this.currentIndex + 1]?.classList.add("is-next");
+    }
+
+    centerSlide(animated = true) {
+        const active = this.slides[this.currentIndex];
+        const offset =
+            active.offsetLeft -
+            (window.innerWidth / 2) +
+            (active.offsetWidth / 2);
+
+        this.track.style.transition = animated
+            ? "transform .8s cubic-bezier(.77,0,.18,1)"
+            : "none";
+        this.track.style.transform = `translateX(${-offset}px)`;
+        this.updateClasses();
+    }
+
+    nextSlide() {
+        if (this.track.dataset.animating === "true") return;
+        this.track.dataset.animating = "true";
+        this.currentIndex++;
+        this.centerSlide(true);
+        this.track.addEventListener("transitionend", () => {
+            if (this.currentIndex >= this.slides.length - 1) {
+                const first = this.slides.shift();
+                this.track.appendChild(first);
+                this.slides.push(first);
+                this.currentIndex--;
+                this.centerSlide(false);
+            }
+            this.track.dataset.animating = "false";
+        }, { once: true });
+    }
+
+    prevSlide() {
+        if (this.track.dataset.animating === "true") return;
+        this.track.dataset.animating = "true";
+        this.currentIndex--;
+        this.centerSlide(true);
+        this.track.addEventListener("transitionend", () => {
+            if (this.currentIndex <= 0) {
+                const last = this.slides.pop();
+                this.track.prepend(last);
+                this.slides.unshift(last);
+                this.currentIndex++;
+                this.centerSlide(false);
+            }
+            this.track.dataset.animating = "false";
+        }, { once: true });
+    }
+
+    // ── Events ───────────────────────────────────────────────────
+    _bindEvents() {
+        const zone = this.cursorZone;
+
+        // Cursor show/hide
+        zone.addEventListener("mouseenter", () => {
+            this.cursor.classList.add("is-visible");
+        });
+        zone.addEventListener("mouseleave", () => {
+            this.cursor.classList.remove("is-visible", "is-dragging");
+            this.isDragging = false;
+        });
+
+        // Mouse position (global — needs to work even outside zone while dragging)
+        window.addEventListener("mousemove", e => {
+            this.cursorX = e.clientX;
+            this.cursorY = e.clientY;
+            if (this.isDragging) {
+                const move = e.clientX - this.startX;
+                this.cursor.style.setProperty("--drag-offset", `${move * 0.18}px`);
+            }
+        });
+
+        // Drag start
+        zone.addEventListener("mousedown", e => {
+            this.isDragging = true;
+            this.startX = e.clientX;
+            this.cursor.classList.add("is-dragging");
+        });
+
+        // Drag end
+        window.addEventListener("mouseup", e => {
+            if (!this.isDragging) return;
+            const diff = e.clientX - this.startX;
+            this.cursor.classList.remove("is-dragging");
+            this.cursor.style.setProperty("--drag-offset", "0px");
+            if (diff < -80)     this.nextSlide();
+            else if (diff > 80) this.prevSlide();
+            this.isDragging = false;
+        });
+
+        // Touch
+        zone.addEventListener("touchstart", e => {
+            this.isDragging = true;
+            this.startX = e.touches[0].clientX;
+        });
+        window.addEventListener("touchend", e => {
+            if (!this.isDragging) return;
+            const diff = e.changedTouches[0].clientX - this.startX;
+            if (diff < -80)     this.nextSlide();
+            else if (diff > 80) this.prevSlide();
+            this.isDragging = false;
+        });
+
+        // Resize
+        window.addEventListener("resize", () => this.centerSlide(false));
+    }
 }
 
-/* =========================================
-   CENTER SLIDE
-========================================= */
-function centerSlide(animated = true) {
-    const activeSlide = slides[currentIndex];
-    const offset =
-        activeSlide.offsetLeft -
-        (window.innerWidth / 2) +
-        (activeSlide.offsetWidth / 2);
-
-    track.style.transition = animated
-        ? "transform .8s cubic-bezier(.77,0,.18,1)"
-        : "none";
-
-    track.style.transform = `translateX(${-offset}px)`;
-    updateClasses();
-}
-
-/* =========================================
-   NEXT / PREV
-========================================= */
-function nextSlide() {
-    if (track.dataset.animating === "true") return;
-    track.dataset.animating = "true";
-    currentIndex++;
-    centerSlide(true);
-    track.addEventListener("transitionend", () => {
-        if (currentIndex >= slides.length - 1) {
-            const first = slides.shift();
-            track.appendChild(first);
-            slides.push(first);
-            currentIndex--;
-            centerSlide(false);
-        }
-        track.dataset.animating = "false";
-    }, { once: true });
-}
-
-function prevSlide() {
-    if (track.dataset.animating === "true") return;
-    track.dataset.animating = "true";
-    currentIndex--;
-    centerSlide(true);
-    track.addEventListener("transitionend", () => {
-        if (currentIndex <= 0) {
-            const last = slides.pop();
-            track.prepend(last);
-            slides.unshift(last);
-            currentIndex++;
-            centerSlide(false);
-        }
-        track.dataset.animating = "false";
-    }, { once: true });
-}
-
-/* =========================================
-   DRAG — MOUSE (on .featured-works-cont only)
-========================================= */
-let isDragging = false;
-let startX     = 0;
-
-cursorZone.addEventListener("mousedown", e => {
-    isDragging = true;
-    startX     = e.clientX;
-    cursor.classList.add("is-dragging");
-    cursor.querySelector(".works-cursor-label").innerHTML = "HOLD <br> & DRAG";
+/* =========================================================
+   INIT — մեկ slider ամեն .featured-works section-ի համար
+========================================================= */
+document.querySelectorAll(".featured-works").forEach(section => {
+    new WorksSlider(section);
 });
-
-window.addEventListener("mousemove", e => {
-    if (!isDragging) return;
-    const move = e.clientX - startX;
-    cursor.style.setProperty("--drag-offset", `${move * 0.18}px`);
-});
-
-window.addEventListener("mouseup", e => {
-    if (!isDragging) return;
-    const diff = e.clientX - startX;
-    cursor.classList.remove("is-dragging");
-    cursor.style.setProperty("--drag-offset", "0px");
-
-    if (diff < -80)      nextSlide();
-    else if (diff > 80)  prevSlide();
-
-    isDragging = false;
-});
-
-/* =========================================
-   DRAG — TOUCH
-========================================= */
-cursorZone.addEventListener("touchstart", e => {
-    isDragging = true;
-    startX     = e.touches[0].clientX;
-});
-
-window.addEventListener("touchmove", e => {
-    if (!isDragging) return;
-});
-
-window.addEventListener("touchend", e => {
-    if (!isDragging) return;
-    const diff = e.changedTouches[0].clientX - startX;
-    if (diff < -80)      nextSlide();
-    else if (diff > 80)  prevSlide();
-    isDragging = false;
-});
-
-/* =========================================
-   RESIZE + INIT
-========================================= */
-window.addEventListener("resize", () => centerSlide(false));
-centerSlide(false);

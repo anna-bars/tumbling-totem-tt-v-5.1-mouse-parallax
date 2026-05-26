@@ -1,6 +1,6 @@
 .featured-works {
     background: linear-gradient(180deg, #141414, #111111);
-    padding: 105px 0;
+    padding: 105px 0 32px 0;
     overflow: hidden;
     position: relative;
 }
@@ -57,7 +57,7 @@
     overflow: hidden;
     position: relative;
 
-    background-image: url(../img/featured-works/work.png);
+    background-image: url(../img/featured-works/work-2.jpg);
     background-size: cover;
     background-position: center;
 
@@ -185,7 +185,7 @@
 }
 
 .item-2 {
-    background-image: url(../img/featured-works/work2.png);
+    background-image: url(../img/featured-works/work.jpg);
 }
 
 .item-3 {
@@ -312,3 +312,7 @@
 
 
 
+.featured-works2 {
+    background: #111111;
+    padding: 0 0 105px 0;
+}
