@@ -385,128 +385,129 @@
 
     </div>
 
+    <script src="./js/hero-preloader.js"></script>
     <script>
-(function () {
+    (function () {
 
-    // ── Scroll parallax config ──────────────────────────────────────────
-    const layers = [
-        { selector: '.layer-1-sky',        scrollSpeed: 0.08 },
-        { selector: '.layer-2-mountains',  scrollSpeed: 0.14 },
-        { selector: '.layer-3-hills-back', scrollSpeed: 0.22 },
-        { selector: '.layer-4-temple',     scrollSpeed: 0.30 },
-        { selector: '.layer-5-jungle-mid', scrollSpeed: 0.455 },
-        { selector: '.layer-6-jungle-front', scrollSpeed: 0.668 },
-        { selector: '.layer-7-foreground', scrollSpeed: 0.754 }
-    ];
+        // ── Scroll parallax config ──────────────────────────────────────────
+        const layers = [
+            { selector: '.layer-1-sky',        scrollSpeed: 0.08 },
+            { selector: '.layer-2-mountains',  scrollSpeed: 0.14 },
+            { selector: '.layer-3-hills-back', scrollSpeed: 0.22 },
+            { selector: '.layer-4-temple',     scrollSpeed: 0.30 },
+            { selector: '.layer-5-jungle-mid', scrollSpeed: 0.455 },
+            { selector: '.layer-6-jungle-front', scrollSpeed: 0.668 },
+            { selector: '.layer-7-foreground', scrollSpeed: 0.754 }
+        ];
 
-    // Mouse parallax depth per layer (px of movement at full edge)
-    // Kept small so scale(1.04) safely covers any edge gap
-    const MOUSE_DEPTH = [
-        { selector: '.layer-1-sky',          mx: 2,   my: 1   },
-        { selector: '.layer-2-mountains',    mx: 3.5, my: 1.5 },
-        { selector: '.layer-3-hills-back',   mx: 5,   my: 2   },
-        { selector: '.layer-4-temple',       mx: 7,   my: 3   },
-        { selector: '.layer-5-jungle-mid',   mx: 9,   my: 3.5 },
-        { selector: '.layer-6-jungle-front', mx: 12,  my: 5   },
-        { selector: '.layer-7-foreground',   mx: 14,  my: 6   },
-        { selector: '.leaves-left',          mx: 0,   my: 0   },
-        { selector: '.leaves-right',         mx: 0,   my: 0   },
-        { selector: '.logo',                 mx: -4,  my: -2  },  // subtle counter-move
-        { selector: '.darkness',             mx: 1.5, my: 0.5 },
-    ];
- 
-    const items = layers.map(layer => ({
-        el: document.querySelector(layer.selector),
-        scrollSpeed: layer.scrollSpeed
-    }));
+        // Mouse parallax depth per layer (px of movement at full edge)
+        // Kept small so scale(1.04) safely covers any edge gap
+        const MOUSE_DEPTH = [
+            { selector: '.layer-1-sky',          mx: 2,   my: 1   },
+            { selector: '.layer-2-mountains',    mx: 3.5, my: 1.5 },
+            { selector: '.layer-3-hills-back',   mx: 5,   my: 2   },
+            { selector: '.layer-4-temple',       mx: 7,   my: 3   },
+            { selector: '.layer-5-jungle-mid',   mx: 9,   my: 3.5 },
+            { selector: '.layer-6-jungle-front', mx: 12,  my: 5   },
+            { selector: '.layer-7-foreground',   mx: 14,  my: 6   },
+            { selector: '.leaves-left',          mx: 0,   my: 0   },
+            { selector: '.leaves-right',         mx: 0,   my: 0   },
+            { selector: '.logo',                 mx: -4,  my: -2  },  // subtle counter-move
+            { selector: '.darkness',             mx: 1.5, my: 0.5 },
+        ];
+    
+        const items = layers.map(layer => ({
+            el: document.querySelector(layer.selector),
+            scrollSpeed: layer.scrollSpeed
+        }));
 
-    const mouseItems = MOUSE_DEPTH.map(d => ({
-        el: document.querySelector(d.selector),
-        mx: d.mx,
-        my: d.my
-    })).filter(d => d.el);
+        const mouseItems = MOUSE_DEPTH.map(d => ({
+            el: document.querySelector(d.selector),
+            mx: d.mx,
+            my: d.my
+        })).filter(d => d.el);
 
-    // ── Smooth mouse state (lerped) ─────────────────────────────────────
-    let mouse = { x: 0, y: 0 };       // normalised -1 … +1
-    let smooth = { x: 0, y: 0 };      // lerped target
-    const LERP = 0.045;                // lower = lazier / dreamier
+        // ── Smooth mouse state (lerped) ─────────────────────────────────────
+        let mouse = { x: 0, y: 0 };       // normalised -1 … +1
+        let smooth = { x: 0, y: 0 };      // lerped target
+        const LERP = 0.045;                // lower = lazier / dreamier
 
-    window.addEventListener('mousemove', e => {
-        mouse.x = (e.clientX / window.innerWidth  - 0.5) * 2;
-        mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
-    }, { passive: true });
+        window.addEventListener('mousemove', e => {
+            mouse.x = (e.clientX / window.innerWidth  - 0.5) * 2;
+            mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+        }, { passive: true });
 
-    // ── Scroll state ────────────────────────────────────────────────────
-    const leavesLeft  = document.querySelector('.leaves-left');
-    const leavesRight = document.querySelector('.leaves-right');
-    const LEAVES_SPEED_Y = 0.18;
-    const LEAVES_SPEED_X = 0.08;
+        // ── Scroll state ────────────────────────────────────────────────────
+        const leavesLeft  = document.querySelector('.leaves-left');
+        const leavesRight = document.querySelector('.leaves-right');
+        const LEAVES_SPEED_Y = 0.18;
+        const LEAVES_SPEED_X = 0.08;
 
-    // ── RAF loop — runs always, handles both scroll + mouse ─────────────
-    function lerp(a, b, t) { return a + (b - a) * t; }
+        // ── RAF loop — runs always, handles both scroll + mouse ─────────────
+        function lerp(a, b, t) { return a + (b - a) * t; }
 
-    function tick() {
-        requestAnimationFrame(tick);
+        function tick() {
+            requestAnimationFrame(tick);
 
-        // Lerp mouse
-        smooth.x = lerp(smooth.x, mouse.x, LERP);
-        smooth.y = lerp(smooth.y, mouse.y, LERP);
+            // Lerp mouse
+            smooth.x = lerp(smooth.x, mouse.x, LERP);
+            smooth.y = lerp(smooth.y, mouse.y, LERP);
 
-        const scrollY = window.scrollY;
+            const scrollY = window.scrollY;
 
-        // Apply scroll + mouse to main layers
-        // scale(1.04) ensures no edge gaps appear when layers shift horizontally
-        items.forEach(item => {
-            if (!item.el) return;
-            const scrollMove = scrollY * item.scrollSpeed;
-            item.el.style.transform = `translate3d(0, -${scrollMove}px, 0) scale(1.04)`;
-        });
+            // Apply scroll + mouse to main layers
+            // scale(1.04) ensures no edge gaps appear when layers shift horizontally
+            items.forEach(item => {
+                if (!item.el) return;
+                const scrollMove = scrollY * item.scrollSpeed;
+                item.el.style.transform = `translate3d(0, -${scrollMove}px, 0) scale(1.04)`;
+            });
 
-        // Apply pure mouse offset to all mouse-aware elements
-        // clamp keeps offset within safe range so scale(1.04) buffer always covers edges
-        const MAX_X = 14;  // px — matches largest mx value
-        const MAX_Y = 6;   // px — matches largest my value
-        const cx = Math.max(-1, Math.min(1, smooth.x));
-        const cy = Math.max(-1, Math.min(1, smooth.y));
+            // Apply pure mouse offset to all mouse-aware elements
+            // clamp keeps offset within safe range so scale(1.04) buffer always covers edges
+            const MAX_X = 14;  // px — matches largest mx value
+            const MAX_Y = 6;   // px — matches largest my value
+            const cx = Math.max(-1, Math.min(1, smooth.x));
+            const cy = Math.max(-1, Math.min(1, smooth.y));
 
-        mouseItems.forEach(d => {
-            const ox = Math.max(-MAX_X, Math.min(MAX_X, cx * d.mx));
-            const oy = Math.max(-MAX_Y, Math.min(MAX_Y, cy * d.my));
+            mouseItems.forEach(d => {
+                const ox = Math.max(-MAX_X, Math.min(MAX_X, cx * d.mx));
+                const oy = Math.max(-MAX_Y, Math.min(MAX_Y, cy * d.my));
 
-            const layerData = items.find(i => i.el === d.el);
-            if (layerData) {
-                const scrollMove = scrollY * layerData.scrollSpeed;
-                d.el.style.transform = `translate3d(${ox}px, calc(-${scrollMove}px + ${oy}px), 0) scale(1.04)`;
-            } else {
-                // logo, darkness — no scale needed, they don't touch edges
-                d.el.style.transform = `translate3d(${ox}px, ${oy}px, 0)`;
+                const layerData = items.find(i => i.el === d.el);
+                if (layerData) {
+                    const scrollMove = scrollY * layerData.scrollSpeed;
+                    d.el.style.transform = `translate3d(${ox}px, calc(-${scrollMove}px + ${oy}px), 0) scale(1.04)`;
+                } else {
+                    // logo, darkness — no scale needed, they don't touch edges
+                    d.el.style.transform = `translate3d(${ox}px, ${oy}px, 0)`;
+                }
+            });
+
+            // Leaves — mouse follows cursor direction, clamped to only move INWARD
+            // Left leaf  : mouse right → leaf right (inward), mouse left → stays, mouse up → stays, mouse down → leaf down (inward)
+            // Right leaf : mouse left → leaf left (inward),  mouse right → stays, mouse up → stays, mouse down → leaf down (inward)
+            const LEAF_M = 7;
+            if (leavesLeft) {
+                const sy = scrollY * LEAVES_SPEED_Y;
+                const sx = scrollY * LEAVES_SPEED_X;
+                const ox = Math.max(0, Math.min(LEAF_M,  smooth.x * LEAF_M));  // right only  (mouse right = positive)
+                const oy = Math.max(0, Math.min(LEAF_M,  smooth.y * LEAF_M));  // down only   (mouse down  = positive)
+                leavesLeft.style.transform  = `translate3d(calc(-${sx}px + ${ox}px), calc(-${sy}px + ${oy}px), 0) scale(1.08)`;
             }
-        });
-
-        // Leaves — mouse follows cursor direction, clamped to only move INWARD
-        // Left leaf  : mouse right → leaf right (inward), mouse left → stays, mouse up → stays, mouse down → leaf down (inward)
-        // Right leaf : mouse left → leaf left (inward),  mouse right → stays, mouse up → stays, mouse down → leaf down (inward)
-        const LEAF_M = 7;
-        if (leavesLeft) {
-            const sy = scrollY * LEAVES_SPEED_Y;
-            const sx = scrollY * LEAVES_SPEED_X;
-            const ox = Math.max(0, Math.min(LEAF_M,  smooth.x * LEAF_M));  // right only  (mouse right = positive)
-            const oy = Math.max(0, Math.min(LEAF_M,  smooth.y * LEAF_M));  // down only   (mouse down  = positive)
-            leavesLeft.style.transform  = `translate3d(calc(-${sx}px + ${ox}px), calc(-${sy}px + ${oy}px), 0) scale(1.08)`;
+            if (leavesRight) {
+                const sy = scrollY * LEAVES_SPEED_Y;
+                const sx = scrollY * LEAVES_SPEED_X;
+                const ox = Math.min(0, Math.max(-LEAF_M, smooth.x * LEAF_M)); // left only   (mouse left  = negative)
+                const oy = Math.max(0, Math.min(LEAF_M,  smooth.y * LEAF_M)); // down only   (mouse down  = positive)
+                leavesRight.style.transform = `translate3d(calc(${sx}px + ${ox}px), calc(-${sy}px + ${oy}px), 0) scale(1.08)`;
+            }
         }
-        if (leavesRight) {
-            const sy = scrollY * LEAVES_SPEED_Y;
-            const sx = scrollY * LEAVES_SPEED_X;
-            const ox = Math.min(0, Math.max(-LEAF_M, smooth.x * LEAF_M)); // left only   (mouse left  = negative)
-            const oy = Math.max(0, Math.min(LEAF_M,  smooth.y * LEAF_M)); // down only   (mouse down  = positive)
-            leavesRight.style.transform = `translate3d(calc(${sx}px + ${ox}px), calc(-${sy}px + ${oy}px), 0) scale(1.08)`;
-        }
-    }
 
-    tick();
+        tick();
 
-})();
-</script>
+    })();
+    </script>
 <script>
 const divider = document.querySelector('.about-section-top-divider');
 
