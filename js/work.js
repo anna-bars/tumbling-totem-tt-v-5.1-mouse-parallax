@@ -16,12 +16,27 @@ class WorksSlider {
         this.currentIndex = 1;
         this.isDragging   = false;
         this.startX       = 0;
+        this.isHoveringActive = false;
+
+        // ── Inject overlays into ALL slides ─────────────────────
+        this.slides.forEach(slide => {
+            const title = slide.dataset.overlayTitle || '';
+            const desc  = slide.dataset.overlayDesc  || '';
+            if (!title && !desc) return;
+            const ov = document.createElement('div');
+            ov.className = 'work-item-click-overlay';
+            ov.innerHTML = `<p class="overlay-title">${title}</p><p class="overlay-desc">${desc}</p>`;
+            ov.style.pointerEvents = 'none';
+            slide.appendChild(ov);
+        });
 
         // ── Cursor ───────────────────────────────────────────────
         this.cursor = document.createElement("div");
         this.cursor.className = "works-cursor";
         this.cursor.innerHTML = `<span class="works-cursor-label">HOLD &<br>DRAG</span>`;
         document.body.appendChild(this.cursor);
+
+        this.cursorLabel = this.cursor.querySelector('.works-cursor-label');
 
         this.cursorX = 0; this.cursorY = 0;
         this.smoothX = 0; this.smoothY = 0;
@@ -43,10 +58,20 @@ class WorksSlider {
         requestAnimationFrame(() => this._animateCursor());
     }
 
+    // ── Cursor label ─────────────────────────────────────────────
+    _updateCursorLabel() {
+        if (this.isDragging) return;
+        if (this.isHoveringActive) {
+            this.cursorLabel.innerHTML = 'CLICK';
+        } else {
+            this.cursorLabel.innerHTML = 'HOLD &<br>DRAG';
+        }
+    }
+
     // ── Slide logic ─────────────────────────────────────────────
     updateClasses() {
         this.slides.forEach(s =>
-            s.classList.remove("is-active", "is-prev", "is-next"));
+            s.classList.remove("is-active", "is-prev", "is-next", "is-revealed"));
         this.slides[this.currentIndex]?.classList.add("is-active");
         this.slides[this.currentIndex - 1]?.classList.add("is-prev");
         this.slides[this.currentIndex + 1]?.classList.add("is-next");
@@ -64,6 +89,9 @@ class WorksSlider {
             : "none";
         this.track.style.transform = `translateX(${-offset}px)`;
         this.updateClasses();
+        // Reset label after slide change
+        this.isHoveringActive = false;
+        this._updateCursorLabel();
     }
 
     nextSlide() {
@@ -100,6 +128,15 @@ class WorksSlider {
         }, { once: true });
     }
 
+    // ── Click toggle — works on ANY slide ───────────────────────
+    _toggleOverlay(clickedSlide) {
+        const isRevealed = clickedSlide.classList.contains('is-revealed');
+        this.slides.forEach(s => s.classList.remove('is-revealed'));
+        if (!isRevealed) {
+            clickedSlide.classList.add('is-revealed');
+        }
+    }
+
     // ── Events ───────────────────────────────────────────────────
     _bindEvents() {
         const zone = this.cursorZone;
@@ -111,15 +148,33 @@ class WorksSlider {
         zone.addEventListener("mouseleave", () => {
             this.cursor.classList.remove("is-visible", "is-dragging");
             this.isDragging = false;
+            this.isHoveringActive = false;
+            this._updateCursorLabel();
         });
 
-        // Mouse position (global — needs to work even outside zone while dragging)
+        // Mouse position + active slide detection
         window.addEventListener("mousemove", e => {
             this.cursorX = e.clientX;
             this.cursorY = e.clientY;
+
             if (this.isDragging) {
                 const move = e.clientX - this.startX;
                 this.cursor.style.setProperty("--drag-offset", `${move * 0.18}px`);
+            } else {
+                const active = this.slides[this.currentIndex];
+                if (active) {
+                    const rect = active.getBoundingClientRect();
+                    const over =
+                        e.clientX >= rect.left &&
+                        e.clientX <= rect.right &&
+                        e.clientY >= rect.top  &&
+                        e.clientY <= rect.bottom;
+
+                    if (over !== this.isHoveringActive) {
+                        this.isHoveringActive = over;
+                        this._updateCursorLabel();
+                    }
+                }
             }
         });
 
@@ -128,6 +183,8 @@ class WorksSlider {
             this.isDragging = true;
             this.startX = e.clientX;
             this.cursor.classList.add("is-dragging");
+            this.cursorLabel.innerHTML = 'HOLD &<br>DRAG';
+            this._clickTarget = this.slides.find(s => s.contains(e.target)) || null;
         });
 
         // Drag end
@@ -136,22 +193,44 @@ class WorksSlider {
             const diff = e.clientX - this.startX;
             this.cursor.classList.remove("is-dragging");
             this.cursor.style.setProperty("--drag-offset", "0px");
-            if (diff < -80)     this.nextSlide();
-            else if (diff > 80) this.prevSlide();
+
+            if (Math.abs(diff) < 10) {
+                if (this._clickTarget) {
+                    this._toggleOverlay(this._clickTarget);
+                }
+            } else if (diff < -80) {
+                this.nextSlide();
+            } else if (diff > 80) {
+                this.prevSlide();
+            }
+
             this.isDragging = false;
+            this._clickTarget = null;
+            this._updateCursorLabel();
         });
 
         // Touch
         zone.addEventListener("touchstart", e => {
             this.isDragging = true;
             this.startX = e.touches[0].clientX;
+            this._clickTarget = this.slides.find(s => s.contains(e.target)) || null;
         });
         window.addEventListener("touchend", e => {
             if (!this.isDragging) return;
             const diff = e.changedTouches[0].clientX - this.startX;
-            if (diff < -80)     this.nextSlide();
-            else if (diff > 80) this.prevSlide();
+
+            if (Math.abs(diff) < 10) {
+                if (this._clickTarget) {
+                    this._toggleOverlay(this._clickTarget);
+                }
+            } else if (diff < -80) {
+                this.nextSlide();
+            } else if (diff > 80) {
+                this.prevSlide();
+            }
+
             this.isDragging = false;
+            this._clickTarget = null;
         });
 
         // Resize

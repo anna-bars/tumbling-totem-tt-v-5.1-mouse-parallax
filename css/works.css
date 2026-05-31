@@ -5,7 +5,6 @@
     position: relative;
 }
 
-/* Hide native cursor only inside the slides container */
 .featured-works-cont {
     cursor: none;
 }
@@ -27,8 +26,6 @@
     font-size: 32px;
 }
 
-/* WRAPPER */
-
 .featured-works-cont {
     width: 100%;
     overflow: visible;
@@ -36,16 +33,12 @@
     user-select: none;
 }
 
-/* TRACK */
-
 .featured-works-track {
     display: flex;
     align-items: center;
     gap: 20px;
     will-change: transform;
 }
-
-/* SLIDES */
 
 .featured-work-item {
     flex-shrink: 0;
@@ -66,14 +59,10 @@
         opacity .6s ease;
 }
 
-/* ACTIVE */
-
 .featured-work-item.is-active {
     opacity: 1;
     transform: scale(1);
 }
-
-/* SIDE SLIDES */
 
 .featured-work-item.is-prev,
 .featured-work-item.is-next {
@@ -81,14 +70,10 @@
     transform: scale(.99);
 }
 
-/* OTHERS */
-
 .featured-work-item:not(.is-active):not(.is-prev):not(.is-next) {
     opacity: .95;
     transform: scale(.98);
 }
-
-/* TOP INFO */
 
 .work-item-top-info {
     position: absolute;
@@ -119,8 +104,6 @@
     text-transform: uppercase;
     font-weight: 400;
 }
-
-/* BOTTOM */
 
 .work-item-bottom-info {
     position: absolute;
@@ -160,8 +143,6 @@
     background: white;
 }
 
-/* SHADOWS */
-
 .work-item-top-shadow {
     position: absolute;
     inset: 0 0 auto 0;
@@ -192,10 +173,6 @@
     background-image: url(../img/featured-works/work3.png);
 }
 
-
-/* =========================================
-   DRAG HINT — hidden, replaced by custom cursor
-========================================= */
 .drag-hint {
     display: none !important;
 }
@@ -214,7 +191,6 @@
     pointer-events: none;
     z-index: 9999;
 
-    /* Start invisible */
     opacity: 0;
     visibility: hidden;
     transition:
@@ -223,7 +199,6 @@
         width .3s ease,
         height .3s ease;
 
-    /* Horizontal offset while dragging */
     --drag-offset: 0px;
 
     background: rgba(255, 255, 255, 0.1);
@@ -238,11 +213,9 @@
     align-items: center;
     justify-content: center;
 
-    /* Smooth drag-follow X */
     will-change: transform;
 }
 
-/* The label inside */
 .works-cursor-label {
     color: white;
     font-size: 13px;
@@ -254,20 +227,17 @@
     transition: opacity .2s ease;
 }
 
-/* Visible state — when inside the section */
 .works-cursor.is-visible {
     opacity: 1;
     visibility: visible;
 }
 
-/* Dragging state */
 .works-cursor.is-dragging {
     width: 110px;
     height: 110px;
     background: rgba(255, 255, 255, 0.18);
 }
 
-/* Direction arrows that appear while dragging */
 .works-cursor.is-dragging::before,
 .works-cursor.is-dragging::after {
     content: '';
@@ -279,11 +249,6 @@
     opacity: 0.7;
 }
 
-
-
-
-
-/* Left arrow */
 .works-cursor.is-dragging::before {
     content: '‹';
     left: 12px;
@@ -296,7 +261,6 @@
     height: auto;
 }
 
-/* Right arrow */
 .works-cursor.is-dragging::after {
     content: '›';
     right: 12px;
@@ -309,10 +273,61 @@
     height: auto;
 }
 
-
-
-
 .featured-works2 {
     background: #111111;
     padding: 0 0 105px 0;
+}
+
+
+/* =========================================
+   CLICK OVERLAY
+========================================= */
+.work-item-click-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: background 0.35s ease;
+    pointer-events: none;
+}
+
+.work-item-click-overlay .overlay-title {
+    color: white;
+    font-size: 32px;
+    text-transform: uppercase;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    text-align: center;
+    padding: 0 24px;
+    margin: 0;
+}
+
+.work-item-click-overlay .overlay-desc {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 15px;
+    margin-top: 12px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease 0.05s, transform 0.35s ease 0.05s;
+    text-align: center;
+    padding: 0 32px;
+    max-width: 420px;
+    line-height: 1.5;
+}
+
+/* REVEALED — click-ով բացվում է ցանկացած slide-ի վրա */
+.featured-work-item.is-revealed .work-item-click-overlay {
+    background: rgba(0, 0, 0, 0.62);
+}
+
+.featured-work-item.is-revealed .overlay-title,
+.featured-work-item.is-revealed .overlay-desc {
+    opacity: 1;
+    transform: translateY(0);
 }
