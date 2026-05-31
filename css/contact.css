@@ -108,17 +108,16 @@
 }
 .contact-inscription {
     position: absolute;
-    top: 28%;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 101;
+    z-index: 10100;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
     text-align: center;
+    bottom: 11%;
 }
-
 .inscription-label {
     font-size: 11px;
     letter-spacing: 0.35em;
