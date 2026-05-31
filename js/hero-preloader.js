@@ -1,6 +1,5 @@
 (function () {
 
-    // ── All hero images to preload ──────────────────────────────────────
     const HERO_IMAGES = [
         './img/hero/background.png',
         './img/hero/darkness.png',
@@ -22,111 +21,335 @@
         './img/hero/fog/fog-triangle-top.png',
     ];
 
-    // ── Inject styles ───────────────────────────────────────────────────
     const style = document.createElement('style');
     style.textContent = `
         #tt-loader {
             position: fixed;
             inset: 0;
             z-index: 999999;
-            background: #0d1a1f;
+            background: #060e10;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 28px;
-            transition: opacity 0.9s ease;
+            overflow: hidden;
         }
 
-        #tt-loader.fade-out {
+        #tt-loader canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .tt-center {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+        }
+
+        /* totem glyph ring */
+        .tt-glyph {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tt-glyph svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .tt-ring-outer {
+            stroke-dasharray: 340;
+            stroke-dashoffset: 340;
+            animation: ttRingFill 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        .tt-ring-inner {
+            stroke-dasharray: 220;
+            stroke-dashoffset: 220;
+            animation: ttRingFill 1.4s 0.3s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        .tt-cross-h {
+            stroke-dasharray: 80;
+            stroke-dashoffset: 80;
+            animation: ttLineFill 0.7s 0.6s ease forwards;
+        }
+        .tt-cross-v {
+            stroke-dasharray: 80;
+            stroke-dashoffset: 80;
+            animation: ttLineFill 0.7s 0.8s ease forwards;
+        }
+        .tt-diamond {
+            opacity: 0;
+            animation: ttFadeIn 0.5s 1.1s ease forwards;
+        }
+        .tt-ticks {
+            opacity: 0;
+            animation: ttFadeIn 0.4s 1.3s ease forwards;
+        }
+
+        @keyframes ttRingFill {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes ttLineFill {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes ttFadeIn {
+            to { opacity: 1; }
+        }
+
+        /* slow spin on outer ring group */
+        .tt-spin {
+            transform-origin: 60px 60px;
+            animation: ttSpin 12s linear infinite;
+        }
+        @keyframes ttSpin {
+            to { transform: rotate(360deg); }
+        }
+        .tt-spin-rev {
+            transform-origin: 60px 60px;
+            animation: ttSpin 8s linear infinite reverse;
+        }
+
+        /* logo */
+        .tt-logo {
+            width: 200px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: ttLogoIn 0.9s 1s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+        @keyframes ttLogoIn {
+            to { opacity: 0.9; transform: translateY(0); }
+        }
+
+        /* progress */
+        .tt-progress-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: ttFadeIn 0.5s 1.2s ease forwards;
+        }
+        .tt-bar-track {
+            width: 140px;
+            height: 1px;
+            background: rgba(210,180,110,0.12);
+            position: relative;
+            overflow: visible;
+        }
+        .tt-bar-fill {
+            height: 1px;
+            width: 0%;
+            background: linear-gradient(90deg, rgba(180,140,70,0.6), rgba(240,210,130,0.95));
+            transition: width 0.25s ease;
+            position: relative;
+        }
+        .tt-bar-fill::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: -3px;
+            width: 2px;
+            height: 7px;
+            background: rgba(240,210,130,0.9);
+            box-shadow: 0 0 6px 2px rgba(255,200,80,0.5);
+        }
+        .tt-pct {
+            font-family: 'Urbanist', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            color: rgba(210,180,110,0.35);
+        }
+
+        /* vignette */
+        #tt-loader::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 30%, #060e10 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* reveal curtain */
+        #tt-loader.reveal {
+            transition: opacity 1.1s cubic-bezier(0.4,0,0.2,1);
             opacity: 0;
             pointer-events: none;
         }
 
-        .tt-loader-logo {
-            width: 220px;
-            opacity: 0.85;
-        }
-
-        .tt-loader-bar-wrap {
-            width: 180px;
-            height: 1px;
-            background: rgba(210, 180, 110, 0.15);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .tt-loader-bar {
-            height: 100%;
-            width: 0%;
-            background: rgba(230, 200, 130, 0.7);
-            box-shadow: 0 0 8px rgba(255, 190, 80, 0.4);
-            transition: width 0.2s ease;
-            border-radius: 2px;
-        }
-
-        .tt-loader-label {
-            font-family: 'Urbanist', sans-serif;
-            font-size: 10px;
-            letter-spacing: 0.35em;
-            color: rgba(210, 180, 110, 0.35);
-            text-transform: uppercase;
-        }
-
-        body.tt-loading {
-            overflow: hidden;
-        }
+        body.tt-loading { overflow: hidden; }
     `;
     document.head.appendChild(style);
 
-    // ── Build loader DOM ────────────────────────────────────────────────
+    // ── Build loader ────────────────────────────────────────────────────
     const loader = document.createElement('div');
     loader.id = 'tt-loader';
     loader.innerHTML = `
-        <img class="tt-loader-logo" src="./img/hero/tumbling-totem-logo.png" alt="Tumbling Totem">
-        <div class="tt-loader-bar-wrap">
-            <div class="tt-loader-bar" id="ttBar"></div>
+        <canvas id="tt-canvas"></canvas>
+
+        <div class="tt-center">
+
+            <!-- ancient glyph / compass -->
+            <div class="tt-glyph">
+                <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                    <!-- outer spinning ring with tick marks -->
+                    <g class="tt-spin">
+                        <circle class="tt-ring-outer" cx="60" cy="60" r="54"
+                            stroke="rgba(210,180,110,0.25)" stroke-width="0.7"/>
+                        <!-- 12 tick marks -->
+                        <g class="tt-ticks" stroke="rgba(210,180,110,0.4)" stroke-width="0.8">
+                            <line x1="60" y1="6"  x2="60" y2="12"/>
+                            <line x1="60" y1="108" x2="60" y2="114"/>
+                            <line x1="6"  y1="60" x2="12" y2="60"/>
+                            <line x1="108" y1="60" x2="114" y2="60"/>
+                            <line x1="22.1" y1="22.1" x2="26.3" y2="26.3"/>
+                            <line x1="93.7" y1="93.7" x2="97.9" y2="97.9"/>
+                            <line x1="97.9" y1="22.1" x2="93.7" y2="26.3"/>
+                            <line x1="26.3" y1="93.7" x2="22.1" y2="97.9"/>
+                        </g>
+                    </g>
+
+                    <!-- mid ring reverse spin -->
+                    <g class="tt-spin-rev">
+                        <circle class="tt-ring-inner" cx="60" cy="60" r="35"
+                            stroke="rgba(210,180,110,0.15)" stroke-width="0.5"
+                            stroke-dasharray="4 5"/>
+                    </g>
+
+                    <!-- static cross arms -->
+                    <line class="tt-cross-h" x1="20" y1="60" x2="100" y2="60"
+                        stroke="rgba(210,180,110,0.3)" stroke-width="0.6"/>
+                    <line class="tt-cross-v" x1="60" y1="20" x2="60" y2="100"
+                        stroke="rgba(210,180,110,0.3)" stroke-width="0.6"/>
+
+                    <!-- cardinal arrow N -->
+                    <polygon class="tt-diamond" points="60,14 57,26 63,26"
+                        fill="rgba(230,200,130,0.9)"/>
+                    <!-- S -->
+                    <polygon class="tt-diamond" points="60,106 57,94 63,94"
+                        fill="rgba(230,200,130,0.45)"/>
+                    <!-- E -->
+                    <polygon class="tt-diamond" points="106,60 94,57 94,63"
+                        fill="rgba(230,200,130,0.6)"/>
+                    <!-- W -->
+                    <polygon class="tt-diamond" points="14,60 26,57 26,63"
+                        fill="rgba(230,200,130,0.6)"/>
+
+                    <!-- center dot -->
+                    <circle class="tt-diamond" cx="60" cy="60" r="3"
+                        fill="rgba(230,200,130,0.95)"/>
+                    <circle class="tt-diamond" cx="60" cy="60" r="6"
+                        stroke="rgba(230,200,130,0.25)" stroke-width="0.6" fill="none"/>
+
+                </svg>
+            </div>
+
+            <img class="tt-logo" src="./img/hero/tumbling-totem-logo.png" alt="Tumbling Totem">
+
+            <div class="tt-progress-wrap">
+                <div class="tt-bar-track">
+                    <div class="tt-bar-fill" id="ttBar"></div>
+                </div>
+                <span class="tt-pct" id="ttPct">0%</span>
+            </div>
         </div>
-        <span class="tt-loader-label">Loading</span>
     `;
     document.body.prepend(loader);
     document.body.classList.add('tt-loading');
 
-    const bar = document.getElementById('ttBar');
+    // ── Particle canvas ─────────────────────────────────────────────────
+    const canvas = document.getElementById('tt-canvas');
+    const ctx    = canvas.getContext('2d');
 
-    // ── Preload images ──────────────────────────────────────────────────
+    function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const PARTICLE_COUNT = 55;
+    const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+        x:     Math.random() * window.innerWidth,
+        y:     Math.random() * window.innerHeight,
+        size:  Math.random() * 1.4 + 0.3,
+        speedY: -(Math.random() * 0.4 + 0.1),
+        speedX: (Math.random() - 0.5) * 0.15,
+        alpha:  Math.random() * 0.5 + 0.1,
+        flicker: Math.random() * Math.PI * 2,
+    }));
+
+    function drawParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const now = Date.now() / 1000;
+
+        particles.forEach(p => {
+            p.flicker += 0.03;
+            const a = p.alpha * (0.7 + 0.3 * Math.sin(p.flicker));
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(220, 185, 100, ${a})`;
+            ctx.fill();
+
+            p.y += p.speedY;
+            p.x += p.speedX;
+
+            if (p.y < -5) {
+                p.y = canvas.height + 5;
+                p.x = Math.random() * canvas.width;
+            }
+        });
+
+        requestAnimationFrame(drawParticles);
+    }
+    drawParticles();
+
+    // ── Progress ────────────────────────────────────────────────────────
+    const bar = document.getElementById('ttBar');
+    const pct = document.getElementById('ttPct');
+
     let loaded = 0;
     const total = HERO_IMAGES.length;
 
     function onLoad() {
         loaded++;
-        const pct = Math.round((loaded / total) * 100);
-        bar.style.width = pct + '%';
-
-        if (loaded >= total) reveal();
+        const p = Math.round((loaded / total) * 100);
+        bar.style.width = p + '%';
+        pct.textContent = p + '%';
+        if (loaded >= total) scheduleReveal();
     }
 
     HERO_IMAGES.forEach(src => {
         const img = new Image();
         img.onload  = onLoad;
-        img.onerror = onLoad; // don't hang on missing assets
+        img.onerror = onLoad;
         img.src = src;
     });
 
     // ── Reveal ──────────────────────────────────────────────────────────
-    function reveal() {
-        // small pause so bar visually hits 100% before fade
+    let revealed = false;
+    function scheduleReveal() {
+        if (revealed) return;
+        revealed = true;
         setTimeout(() => {
-            loader.classList.add('fade-out');
+            loader.classList.add('reveal');
             document.body.classList.remove('tt-loading');
-
-            loader.addEventListener('transitionend', () => {
-                loader.remove();
-            }, { once: true });
-        }, 350);
+            loader.addEventListener('transitionend', () => loader.remove(), { once: true });
+        }, 500);
     }
 
-    // ── Safety fallback — never hang longer than 6s ─────────────────────
-    setTimeout(reveal, 6000);
+    setTimeout(scheduleReveal, 7000);
 
 })();
