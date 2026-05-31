@@ -35,7 +35,7 @@
     /* Temple — scale up, center */
     .layer-4-temple {
         width: 55%;
-        left: 50%;
+        /* left: 50%; */
         transform: translateX(-50%);
         bottom: 8%;
     }

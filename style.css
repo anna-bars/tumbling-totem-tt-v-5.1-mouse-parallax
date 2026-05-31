@@ -104,7 +104,10 @@ height: 108vh;
     position: absolute;
     z-index: 4;
     bottom: 7%;
-    left: 38%;
+    /* left: 38%; */
+     left: 0;
+    right: 0;
+    margin: 0 auto;
 }
 .layer-5-jungle-mid {
     width: 100%;
