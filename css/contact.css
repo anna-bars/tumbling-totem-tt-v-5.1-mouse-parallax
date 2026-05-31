@@ -1,0 +1,115 @@
+.contact {
+    background-image: url(../img/contact/contact-back.png);
+    background-size: cover;
+    height: 144vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.front-bottom-layer-01 {
+    width: 100%;
+    position: absolute;
+    bottom: -2%;
+    z-index: 111;
+}
+
+.front-layer-top-leaves-02 {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 111;
+}
+.front-layer-top-02 {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 112;
+}
+
+.top-arch-03 {
+    width: 100%;
+    position: absolute;
+    top: 4.5%;
+    z-index: 108;
+}
+.left-arch-04 {
+    height: 100%;
+    position: absolute;
+    left: -4%;
+    bottom: 0;
+    z-index: 107;
+}
+.right-arch-05 {
+    height: 100%;
+    position: absolute;
+    right: -4%;
+    bottom: 0;
+    z-index: 106;
+}
+
+
+.totem-06 {
+    height: 57%;
+    position: absolute;
+    bottom: 5%;
+    left: 27.5%;
+    z-index: 105;
+
+}
+.layer-light-07-1 {
+    position: absolute;
+    z-index: 104;
+    width: 29%;
+    left: 35%;
+    top: 23%;
+}
+
+.totem-light-07 {
+    position: absolute;
+    z-index: 103;
+    height: 80%;
+    top: 0;
+    left: 39.7%;
+    width: 20%;
+}
+
+.totem-left-arch-08 {
+    position: absolute;
+    height: 94%;
+    top: 0;
+    left: 21.3%;
+    z-index: 102;
+}
+.totem-right-arch-08 {
+    position: absolute;
+    height: 94%;
+    top: 0;
+    right: 21.3%;
+    z-index: 102;
+}
+.back-arch-darker-09 {
+    position: absolute;
+    width: 96%;
+    z-index: 100;
+    top: 2%;
+    left: 2%;
+}
+.back-arch-lighter-10 {
+    position: absolute;
+    width: 84%;
+    z-index: 80;
+    top: 8%;
+    left: 8%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
