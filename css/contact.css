@@ -106,7 +106,48 @@
     left: 9%;
     height: 78%;
 }
+.contact-inscription {
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
 
+.inscription-label {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: rgba(210, 185, 140, 0.5);
+    text-transform: uppercase;
+    font-family: 'Urbanist', sans-serif;
+    font-weight: 400;
+}
+
+.inscription-email {
+    font-size: 18px;
+    letter-spacing: 0.12em;
+    color: rgba(230, 205, 155, 0.82);
+    text-transform: lowercase;
+    font-family: 'Urbanist', sans-serif;
+    font-weight: 300;
+    text-decoration: none;
+    text-shadow:
+        0 0 18px rgba(255, 210, 120, 0.35),
+        0 0 40px rgba(255, 180, 60, 0.15);
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.inscription-email:hover {
+    color: rgba(255, 225, 170, 1);
+    text-shadow:
+        0 0 22px rgba(255, 210, 120, 0.6),
+        0 0 60px rgba(255, 180, 60, 0.3);
+}
 
 
 
