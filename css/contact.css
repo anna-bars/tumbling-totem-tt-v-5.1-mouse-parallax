@@ -1,7 +1,7 @@
 .contact {
     background-image: url(../img/contact/contact-back.png);
     background-size: cover;
-    height: 144vh;
+    height: 134vh;
     position: relative;
     overflow: hidden;
 }
@@ -16,7 +16,7 @@
 .front-layer-top-leaves-02 {
     width: 100%;
     position: absolute;
-    top: 0;
+    top: 29px;
     z-index: 111;
 }
 .front-layer-top-02 {
@@ -29,30 +29,31 @@
 .top-arch-03 {
     width: 100%;
     position: absolute;
-    top: 4.5%;
+    top: 5%;
     z-index: 108;
 }
 .left-arch-04 {
-    height: 100%;
+    height: 62%;
     position: absolute;
-    left: -4%;
-    bottom: 0;
+    left: 0%;
+    bottom: 12%;
     z-index: 107;
+    width: 17%;
 }
 .right-arch-05 {
-    height: 100%;
+    height: 62%;
     position: absolute;
-    right: -4%;
-    bottom: 0;
+    right: 0%;
+    bottom: 13%;
     z-index: 106;
+    width: 15.5%;
 }
-
 
 .totem-06 {
     height: 57%;
     position: absolute;
     bottom: 5%;
-    left: 27.5%;
+    left: 28.5%;
     z-index: 105;
 
 }
@@ -75,35 +76,36 @@
 
 .totem-left-arch-08 {
     position: absolute;
-    height: 94%;
-    top: 0;
-    left: 21.3%;
+    height: 82%;
+    top: 12%;
+    left: 24.3%;
     z-index: 102;
+    width: 14.4%;
 }
 .totem-right-arch-08 {
     position: absolute;
-    height: 94%;
-    top: 0;
-    right: 21.3%;
+    height: 82%;
+    top: 10%;
+    right: 24.3%;
     z-index: 102;
+    width: 14.4%;
 }
 .back-arch-darker-09 {
     position: absolute;
     width: 96%;
     z-index: 100;
-    top: 2%;
+    top: 5%;
     left: 2%;
+    height: 81%;
 }
 .back-arch-lighter-10 {
     position: absolute;
-    width: 84%;
+    width: 82%;
     z-index: 80;
-    top: 8%;
-    left: 8%;
+    top: 10%;
+    left: 9%;
+    height: 78%;
 }
-
-
-
 
 
 
