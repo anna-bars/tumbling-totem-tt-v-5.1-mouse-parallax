@@ -5,81 +5,78 @@
 
     const inscription = document.querySelector('.contact-inscription');
 
-    // ── Create single arrow hint ────────────────────────────────────────
-    const hint = document.createElement('div');
-    hint.className = 'contact-cursor-hint';
-    hint.innerHTML = `<span class="hint-arr">↓</span>`;
-    document.body.appendChild(hint);
-
-    // ── CSS ─────────────────────────────────────────────────────────────
     const style = document.createElement('style');
     style.textContent = `
-        .contact-cursor-hint {
+        .ct-dot {
             position: fixed;
             pointer-events: none;
             z-index: 99999;
-            opacity: 0;
-            transform: translate(-50%, -50%) rotate(0deg);
-            transition: opacity 0.3s ease;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
             mix-blend-mode: screen;
-        }
-        .contact-cursor-hint.visible {
-            opacity: 1;
-        }
-        .hint-arr {
-            display: block;
-            font-size: 20px;
-            color: rgba(230, 205, 155, 0.85);
-            text-shadow: 0 0 14px rgba(255, 200, 100, 0.5);
-            font-family: 'Urbanist', sans-serif;
-            line-height: 1;
+            transition: opacity 0.4s ease;
         }
     `;
     document.head.appendChild(style);
 
-    // ── State ───────────────────────────────────────────────────────────
-    let inside = false;
-    let raf = null;
-    let currentAngle = 0;
-    let targetAngle  = 0;
+    const DOT_COUNT = 8;
+    const dots = [];
 
-    function lerp(a, b, t) { return a + (b - a) * t; }
-
-    function tick() {
-        currentAngle = lerp(currentAngle, targetAngle, 0.08);
-        hint.style.transform = `translate(-50%, -50%) rotate(${currentAngle}deg)`;
-        raf = requestAnimationFrame(tick);
+    for (let i = 0; i < DOT_COUNT; i++) {
+        const d = document.createElement('div');
+        d.className = 'ct-dot';
+        // i=0 closest to cursor (large), i=DOT_COUNT-1 closest to email (small)
+        const t = i / (DOT_COUNT - 1);
+        const size = 5 - t * 3.2;
+        const alpha = 0.75 - t * 0.5;
+        d.style.cssText = `
+            width: ${size}px;
+            height: ${size}px;
+            background: rgba(230, 200, 130, ${alpha});
+            box-shadow: 0 0 ${4 + t * 6}px rgba(255, 190, 80, ${0.4 - t * 0.2});
+            opacity: 0;
+        `;
+        document.body.appendChild(d);
+        dots.push(d);
     }
 
-    // ── Mouse move ──────────────────────────────────────────────────────
+    let mx = 0, my = 0;
+    let raf = null;
+
+    function getEmailCenter() {
+        if (!inscription) return { x: window.innerWidth / 2, y: window.innerHeight * 0.85 };
+        const r = inscription.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    }
+
+    function placeDots() {
+        const email = getEmailCenter();
+
+        dots.forEach((d, i) => {
+            // t=0 → cursor, t=1 → email
+            const t = i / (DOT_COUNT - 1);
+            const et = t * t;
+            const x = mx + (email.x - mx) * et;
+            const y = my + (email.y - my) * et;
+            d.style.left = x + 'px';
+            d.style.top  = y + 'px';
+        });
+
+        raf = requestAnimationFrame(placeDots);
+    }
+
     document.addEventListener('mousemove', (e) => {
-        hint.style.left = e.clientX + 'px';
-        hint.style.top  = e.clientY + 'px';
-
-        if (!inside || !inscription) return;
-
-        const ir = inscription.getBoundingClientRect();
-        const tx = ir.left + ir.width  / 2;
-        const ty = ir.top  + ir.height / 2;
-
-        const dx = tx - e.clientX;
-        const dy = ty - e.clientY;
-
-        // angle from cursor toward inscription; ↓ arrow base = 0 deg
-        const angle = Math.atan2(-dx, dy) * (180 / Math.PI);
-        targetAngle = angle;
+        mx = e.clientX;
+        my = e.clientY;
     }, { passive: true });
 
-    // ── Enter / leave ────────────────────────────────────────────────────
     contact.addEventListener('mouseenter', () => {
-        inside = true;
-        hint.classList.add('visible');
-        if (!raf) raf = requestAnimationFrame(tick);
+        dots.forEach(d => d.style.opacity = '1');
+        if (!raf) raf = requestAnimationFrame(placeDots);
     });
 
     contact.addEventListener('mouseleave', () => {
-        inside = false;
-        hint.classList.remove('visible');
+        dots.forEach(d => d.style.opacity = '0');
         if (raf) { cancelAnimationFrame(raf); raf = null; }
     });
 
