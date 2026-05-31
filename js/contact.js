@@ -16,16 +16,56 @@
             mix-blend-mode: screen;
             transition: opacity 0.4s ease;
         }
+
+        .contact { cursor: none; }
+
+        .ct-cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100000;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            mix-blend-mode: screen;
+        }
+
+        .ct-cursor.visible { opacity: 1; }
     `;
     document.head.appendChild(style);
 
+    /* ── Custom cursor SVG — compass / ancient cross ─────────────────── */
+    const cursor = document.createElement('div');
+    cursor.className = 'ct-cursor';
+    cursor.innerHTML = `
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="2.2" fill="rgba(230,200,130,0.9)"/>
+            <!-- N -->
+            <polygon points="18,3 16,9 20,9" fill="rgba(230,200,130,0.9)"/>
+            <!-- S -->
+            <polygon points="18,33 16,27 20,27" fill="rgba(230,200,130,0.55)"/>
+            <!-- E -->
+            <polygon points="33,18 27,16 27,20" fill="rgba(230,200,130,0.7)"/>
+            <!-- W -->
+            <polygon points="3,18 9,16 9,20" fill="rgba(230,200,130,0.7)"/>
+            <!-- arms -->
+            <line x1="18" y1="11" x2="18" y2="15" stroke="rgba(230,200,130,0.45)" stroke-width="0.8"/>
+            <line x1="18" y1="21" x2="18" y2="25" stroke="rgba(230,200,130,0.3)" stroke-width="0.8"/>
+            <line x1="11" y1="18" x2="15" y2="18" stroke="rgba(230,200,130,0.35)" stroke-width="0.8"/>
+            <line x1="21" y1="18" x2="25" y2="18" stroke="rgba(230,200,130,0.35)" stroke-width="0.8"/>
+            <!-- outer ring -->
+            <circle cx="18" cy="18" r="12" stroke="rgba(210,180,110,0.2)" stroke-width="0.6" fill="none"/>
+            <circle cx="18" cy="18" r="8"  stroke="rgba(210,180,110,0.15)" stroke-width="0.5" fill="none" stroke-dasharray="2 3"/>
+        </svg>
+    `;
+    document.body.appendChild(cursor);
+
+    /* ── Dots trail ──────────────────────────────────────────────────── */
     const DOT_COUNT = 8;
     const dots = [];
 
     for (let i = 0; i < DOT_COUNT; i++) {
         const d = document.createElement('div');
         d.className = 'ct-dot';
-        // i=0 closest to cursor (large), i=DOT_COUNT-1 closest to email (small)
         const t = i / (DOT_COUNT - 1);
         const size = 5 - t * 3.2;
         const alpha = 0.75 - t * 0.5;
@@ -42,6 +82,7 @@
 
     let mx = 0, my = 0;
     let raf = null;
+    let angle = 0;
 
     function getEmailCenter() {
         if (!inscription) return { x: window.innerWidth / 2, y: window.innerHeight * 0.85 };
@@ -49,11 +90,12 @@
         return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
     }
 
-    function placeDots() {
-        const email = getEmailCenter();
+    function loop() {
+        angle += 0.3;
+        cursor.querySelector('svg').style.transform = `rotate(${angle}deg)`;
 
+        const email = getEmailCenter();
         dots.forEach((d, i) => {
-            // t=0 → cursor, t=1 → email
             const t = i / (DOT_COUNT - 1);
             const et = t * t;
             const x = mx + (email.x - mx) * et;
@@ -62,20 +104,24 @@
             d.style.top  = y + 'px';
         });
 
-        raf = requestAnimationFrame(placeDots);
+        raf = requestAnimationFrame(loop);
     }
 
     document.addEventListener('mousemove', (e) => {
         mx = e.clientX;
         my = e.clientY;
+        cursor.style.left = mx + 'px';
+        cursor.style.top  = my + 'px';
     }, { passive: true });
 
     contact.addEventListener('mouseenter', () => {
+        cursor.classList.add('visible');
         dots.forEach(d => d.style.opacity = '1');
-        if (!raf) raf = requestAnimationFrame(placeDots);
+        if (!raf) raf = requestAnimationFrame(loop);
     });
 
     contact.addEventListener('mouseleave', () => {
+        cursor.classList.remove('visible');
         dots.forEach(d => d.style.opacity = '0');
         if (raf) { cancelAnimationFrame(raf); raf = null; }
     });
