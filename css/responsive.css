@@ -76,12 +76,75 @@
     }
 }
 
-
+@media (max-width: 1024px) {
+    .leaves-left, .leaves-right {
+        width: 28%;
+    }
+    .logo {
+        width: 45%;
+    }
+    .layer-1-sky {
+        bottom: 30%;
+        height: 24%;
+    }
+    .layer-2-mountains {
+        bottom: 24%;
+        height: 29%;
+    }
+    .layer-3-hills-back {
+        bottom: 14%;
+        height: 27%;
+    }
+    .layer-4-temple {
+        width: 37%;
+        bottom: 14%;
+    }
+    .layer-5-jungle-mid {
+        bottom: -2%;
+        height: 34%;
+    }
+    .layer-6-jungle-front {
+        bottom: -8%;
+        height: 34%;
+    }
+    .layer-7-foreground {
+        bottom: -28%;
+    }
+    .about-section-top-divider.scrolled {
+        height: 25%;
+    }
+    .about-section-bottom-divider {
+        height: 25%;
+    }
+    .front-bottom-layer-01 {
+        bottom: 0%;
+        height: 31%;
+    }
+    .totem-light-07 {
+        left: 38%;
+        width: 23%;
+    }
+    .totem-left-arch-08 {
+        left: 18.3%;
+        width: 18.4%;
+    }
+    .totem-right-arch-08 {
+        right: 18.3%;
+        width: 18.4%;
+    }
+    h1 {
+        font-size: 38px;
+    }
+    .about-second-cont {
+        width: 84%;
+        margin-right: 0%;
+    }
+}
 
 
 
 /* 1220 -> 1024 */
-
+/* 1024 -> 768 */
 
 /* ============================================================
    PRELOADER — mobile
