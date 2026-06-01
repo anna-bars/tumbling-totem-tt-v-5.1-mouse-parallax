@@ -45,16 +45,42 @@
         height: 66%;
     }
 }
-/* -12% */
+
+@media (max-width: 1220px) {
+    .layer-5-jungle-mid {
+        bottom: -12%;
+        border-bottom: 38px solid #122E39;
+    }
+    .layer-6-jungle-front {
+        bottom: -18%;
+    } 
+    .layer-7-foreground {
+        width: 100%;
+        position: absolute;
+        bottom: -36%;
+        z-index: 7;
+    }
+    .about-section-top-divider.scrolled {
+        top: -97px;
+    }
+    .about-second-cont {
+        width: 63%;
+    }
+    .left-arch-04 {
+        height: 70%;
+        bottom: 10%;
+    }
+    .right-arch-05 {
+        height: 70%;
+        bottom: 10%;
+    }
+}
 
 
 
 
 
-
-
-
-
+/* 1220 -> 1024 */
 
 
 /* ============================================================
