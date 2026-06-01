@@ -181,6 +181,20 @@
     .heroo::before {
         height: 44%;
     }
+    .totem-06 { 
+        height: 48%;
+        position: absolute;
+        bottom: 5%;
+        /* left: 28.5%; */
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        z-index: 105;
+
+    }
+     .contact {
+        height: 94vh;
+    }
 }
 
 
