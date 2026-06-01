@@ -11,6 +11,8 @@ height: 108vh;
     background-size: cover;
     position: relative;
     overflow: hidden;
+    width: 100%;
+    overflow-x: hidden;
 }
 .hero-hint-cta-text {
     width: 100%;
@@ -135,6 +137,7 @@ height: 108vh;
     position: absolute;
     width: 100%;
     z-index: 45;
+    height: 100%;
 }
 
 .fog_olips_left {

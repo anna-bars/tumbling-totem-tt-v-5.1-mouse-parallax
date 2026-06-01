@@ -140,11 +140,53 @@
         margin-right: 0%;
     }
 }
-
+@media (max-width: 768px) {
+    .leaves-left, .leaves-right {
+        width: 44%;
+    }
+    .logo {
+        padding-top: 145px;
+    }
+    .layer-1-sky {
+        bottom: 40%;
+        height: 18%;
+        width: 110%;
+        margin: auto;
+        border-bottom: 44px solid #1B556A;
+    }
+    .layer-2-mountains {
+        bottom: 36%;
+        height: 22%;
+        width: 110%;
+    }
+    .layer-3-hills-back {
+        bottom: 30%;
+        height: 18%;
+    }
+    .layer-4-temple {
+        width: 48%;
+        bottom: 29%;
+    }
+    .layer-5-jungle-mid {
+        bottom: 19%;
+        height: 22%;
+    }
+    .layer-6-jungle-front {
+        bottom: 10%;
+        height: 28%;
+    }
+    .layer-7-foreground {
+        bottom: 2%;
+    }
+    .heroo::before {
+        height: 44%;
+    }
+}
 
 
 /* 1220 -> 1024 */
 /* 1024 -> 768 */
+/* 768 -> 480 */
 
 /* ============================================================
    PRELOADER — mobile
