@@ -237,6 +237,18 @@
     .fog_olips_left, .fog_olips_right  {
         bottom: 37%;
     }
+        h1 {
+        font-size: 28px;
+        width: 58%;
+    }
+    .about-second-cont p {
+        font-size: 15px;
+        width: 76%;
+    }
+    .about-second-cont span {
+        width: fit-content;
+        font-size: 12px;
+    }
 }
 
 
@@ -251,3 +263,22 @@
     .tt-glyph { width: 88px; height: 88px; }
     .tt-bar-track { width: 110px; }
 }
+@media (max-width: 390px) {
+        .contact {
+        height: 84vh;
+        margin-bottom: 42px;
+    }
+    .contact-inscription {
+
+    bottom: 1.5%;
+}
+.front-bottom-layer-01
+ {
+        border-bottom: 145px solid #0d161a;
+    height: 48%;
+    bottom: -16%;
+ }
+}
+
+
+
