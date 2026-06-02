@@ -192,8 +192,15 @@
         z-index: 105;
 
     }
-     .contact {
-        height: 94vh;
+    .about-section-top-divider.scrolled {
+        height: 20%;
+        top: -55px;
+    }
+    .about-section-bottom-divider {
+        height: 18%;
+    }
+        .contact {
+        height: 76vh;
     }
 }
 
