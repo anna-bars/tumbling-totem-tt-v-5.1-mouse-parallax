@@ -181,16 +181,9 @@
     .heroo::before {
         height: 44%;
     }
-    .totem-06 { 
-        height: 48%;
-        position: absolute;
-        bottom: 5%;
-        /* left: 28.5%; */
-        left: 0;
-        right: 0;
-        margin: 0 auto;
-        z-index: 105;
-
+    .totem-06 {
+        height: 44%;
+        bottom: 4%;
     }
     .about-section-top-divider.scrolled {
         height: 20%;
@@ -199,8 +192,50 @@
     .about-section-bottom-divider {
         height: 18%;
     }
-        .contact {
-        height: 76vh;
+    .contact {
+        height: 98vh;
+    }
+    .about-second-cont {
+        width: 100%;
+        flex-direction: column;
+        gap: 16px;
+    }
+        .totem-light-07 {
+        left: 35%;
+        width: 28%;
+    }
+        .totem-left-arch-08 {
+        left: 13.3%;
+        width: 20.4%;
+        top: 10%;
+    }
+    
+    .totem-right-arch-08 {
+        right: 10.3%;
+        width: 24.4%;
+        top: 10%;
+    }
+    .top-arch-03 {
+        top: 5.5%;
+        height: 16%;
+    }
+    .front-layer-top-leaves-02 {
+        height: 34%;
+    }
+    .back-arch-darker-09 {
+        width: 96%;
+        top: 2%;
+        left: 2%;
+        height: 84%;
+    }
+    .back-arch-lighter-10 {
+        width: 82%;
+        top: 9%;
+        left: 9%;
+        height: 74%;
+    }
+    .fog_olips_left, .fog_olips_right  {
+        bottom: 37%;
     }
 }
 
